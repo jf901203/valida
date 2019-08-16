@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+  <script type="text/javascript" src="./jquery.min.js"></script>
+  <script type="text/javascript" src="./jq-validation.js"></script>
+  <style>
+   *{
+   	margin:0;
+   	padding:0;
+   }
+   #demo{
+   	width: 60%;
+   	margin:auto;
+   	padding:20px;
+   	border:1px solid #f1f1f1;
+   }
+.item{
+    height: 56px;
+    line-height: 36px;
+    margin: 10px;
+}
+
+.label{
+    float: left;
+    width: 80px;
+    text-align: right;
+}
+
+.text{
+    float: left;
+    width:30%;
+    margin-left: 10px;
+    line-height: 35px;
+    border:0;
+    border:1px solid #f1f1f1;
+
+}
+
+label.error,label.tip{
+	  float: left;
+    height: 32px;
+    line-height: 32px;
+    font-size: 14px;
+    text-align: left;
+    margin-left: 5px;
+    padding-left: 20px;
+    color: red;
+    background: url('./error.png') no-repeat left center;
+}
+label.tip{
+	color:red;
+	background: url('./tip.png') no-repeat left center;
+}
+/*验证通过的样式*/
+label.valid{
+	background: url('./valid.png') no-repeat left center;
+}
+   	
+  </style>
+</head>
+<body>
+	<div id="demo">
+		<form action="" id="myForm">
+			 
+			 <p class="item">
+				 	<label for="user" class="label">
+				 		 用户名:
+				 	</label>
+				 	<input type="text" id="user" name="user" class="text" tip="请输入用户名">
+			 </p>
+			 <p class="item">
+				 	<label for="pwd" class="label">
+				 		 密码:
+				 	</label>
+				 	<input type="text" id="pwd" name="pwd" class="text" tip="请输入密码">
+			 </p>
+			 <p class="item">
+				 	<label for="repwd" class="label">
+				 		 确认密码:
+				 	</label>
+				 	<input type="text" id="repwd" name="repwd" class="text" tip="请确认密码">
+			 </p>
+			  <p>
+				 <button>提交</button>
+			 </p>
+
+		</form>
+	</div>
+</body>
+</html>
+<script>
+	$(function(){
+
+
+		$.validator.setDefaults({
+		//关闭键盘弹起的实时验证；
+				onkeyup:null,
+				// 成功的回调
+				success:function(label){
+					label.text('').addClass("valid")
+				},
+
+     // 获取焦点的回调
+     onfocusin:function(el){
+     
+	     this.lastActive=el
+	     this.addWrapper(this.errorsFor(el)).hide()
+	     var tip=$(el).attr('tip')
+	     if(tip && $(el).parent().children(".tip").length === 0){
+	       $(el).parent().append("<label class='tip'>" + tip + "</label>");
+
+	        } 
+
+     },
+
+     // 失去焦点的回调
+
+     onfocusout:function(el){
+	     $(el).parent().children('.tip').remove()
+	     this.element(el)
+     }
+
+
+		})
+
+		$("#myForm").validate({
+			rules:{
+				user:{
+          required:true,
+          minlength:2
+				},
+				pwd:{
+					required:true,
+					maxlength:6
+				},
+				repwd:{
+					required:true,
+					equalTo:'#pwd'
+				}
+
+			},
+			  messages:{
+            user:{
+                required: "用户名不能为空",
+                minlength: "用户名的最小长度为2"
+            },
+            pwd:{
+                required: "密码不能为空",
+                minlength: "密码长度不能少于6个字符",
+                maxlength: "密码长度不能超过16个字符"
+            },
+            repwd:{
+                required: "确认密码不能为空",
+                equalTo: "确认密码和密码不一致"
+            }
+        }
+		})
+	})
+</script>
